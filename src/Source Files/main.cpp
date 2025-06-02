@@ -9,15 +9,17 @@
 int main() {
     int64 startTime = clock();
 
-    const int32 width = 800;
-    const int32 height = 600;
+    const int32 width = 1200;
+    const int32 height = 900;
 
     Image* image = imgCreateImage(width, height);
-    for (int32 x = 0; x < width; x++) {
-        for (int32 y = 0; y < height; y++) {
+    for (int32 y = 0; y < height; y++) {
+        std::clog << "\rScanlines remaining: " << height - y << "             " << std::flush;
+        for (int32 x = 0; x < width; x++) {
             imgSetImagePixel(image, x, y, imgCreatePixel((uint8)((y * width + x) * 255 / (image->size - 1)), (uint8)(y * 255 / (height - 1)), (uint8)(x * 255 / (width - 1))));
         }
     }
+    std::clog << "\rDone.                                   \n";
     imgSaveImage(image, "../../output.bmp");
     imgDestroyImage(image);
 
