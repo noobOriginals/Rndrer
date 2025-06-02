@@ -10,7 +10,7 @@ extern "C" {
 
 // Structs
 typedef struct Pixel {
-    uint8 r, g, b, a;
+    uint8 r, g, b;
 } Pixel;
 typedef struct Image {
     Pixel* pixels;
@@ -20,7 +20,7 @@ typedef struct Image {
 } Image;
 
 // Methods
-Pixel imgCreatePixel(uint8 r, uint8 g, uint8 b, uint8 a);
+Pixel imgCreatePixel(uint8 r, uint8 g, uint8 b);
 Image* imgCreateImage(int32 width, int32 height);
 void imgDestroyImage(Image* img);
 void imgSetImagePixel(Image* img, int32 x, int32 y, Pixel px);
