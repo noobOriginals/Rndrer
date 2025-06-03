@@ -4,13 +4,12 @@
 // Local includes
 #include <util/types.h>
 #include <util/vec.hpp>
-#include <util/ray.hpp>
 #include <util/image.hpp>
+#include <ray.hpp>
+#include <raycaster.hpp>
 #include <time.h>
 
-pixelRGB raycast(ray3d ray) {
-    return pixelRGB(0, 255, 0);
-}
+using namespace vec;
 
 int32 main() {
     // Set constants
@@ -21,7 +20,7 @@ int32 main() {
 
     vec3 cameraPos = vec3(0, 0, 0);
     float32 viewportWidth = 10.0f;
-    float32 viewportHeight = viewportWidth * imageHeight / imageWidth;
+    float32 viewportHeight = viewportWidth * (float32) imageHeight / imageWidth;
     vec3 viewportX = vec3(viewportWidth, 0, 0);
     vec3 viewportY = vec3(0, viewportHeight, 0);
     vec3 pixelDeltaX = viewportX / imageWidth;
@@ -35,7 +34,7 @@ int32 main() {
         for (int32 x = 0; x < imageWidth; x++) {
             vec3 pixelPos = pixelOrigin + y * pixelDeltaY + x * pixelDeltaX;
             ray3d ray(cameraPos, pixelPos - cameraPos);
-            pixelRGB pixel = raycast(ray);
+            pixelRGB pixel = raycaster::raycast(ray);
             img.set(x, y, pixel);
         }
     }

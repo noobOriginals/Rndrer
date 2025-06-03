@@ -23,7 +23,10 @@ struct pixelRGB {
         b = z;
     }
     pixelRGB operator=(const pixelRGB& p) {
-        return pixelRGB(p.r, p.g, p.b);
+        r = p.r;
+        g = p.g;
+        b = p.b;
+        return pixelRGB(r, g, b);
     }
 };
 struct Image {

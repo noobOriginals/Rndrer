@@ -8,6 +8,8 @@
 // Local includes
 #include <util/types.h>
 
+namespace vec {
+
 struct vec3 {
     float32 e[3];
     float32& x = e[0];
@@ -39,7 +41,10 @@ struct vec3 {
         return vec3(-e[0], -e[1], -e[2]);
     }
     vec3 operator=(const vec3& v) {
-        return vec3(v.x, v.y, v.z);
+        x = v.x;
+        y = v.y;
+        z = v.z;
+        return vec3(x, y, z);
     }
 };
 // Vec3 Operators
@@ -96,6 +101,8 @@ vec3 cross3(vec3 v0, vec3 v1) {
 }
 vec3 normalize3(vec3 v) {
     return v / v.len();
+}
+
 }
 
 #endif
