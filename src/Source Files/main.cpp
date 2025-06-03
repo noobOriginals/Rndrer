@@ -3,27 +3,43 @@
 
 // Local includes
 #include <util/types.h>
-#include <image.h>
+#include <util/vec.hpp>
+#include <util/ray.hpp>
+#include <util/image.hpp>
 #include <time.h>
 
-int main() {
-    int64 startTime = clock();
+pixelRGB raycast(ray3d ray) {
+    return pixelRGB(0, 255, 0);
+}
 
-    const int32 width = 1200;
-    const int32 height = 900;
+int32 main() {
+    // Set constants
+    float32 focalLength = 2.0f;
+    float32 aspectRatio = 4.0f / 3.0f;
+    int32 imageWidth = 1200;
+    int32 imageHeight = (int32)(imageWidth / aspectRatio);
 
-    Image* image = imgCreateImage(width, height);
-    for (int32 y = 0; y < height; y++) {
-        std::clog << "\rScanlines remaining: " << height - y << "             " << std::flush;
-        for (int32 x = 0; x < width; x++) {
-            imgSetImagePixel(image, x, y, imgCreatePixel((uint8)((y * width + x) * 255 / (image->size - 1)), (uint8)(y * 255 / (height - 1)), (uint8)(x * 255 / (width - 1))));
+    vec3 cameraPos = vec3(0, 0, 0);
+    float32 viewportWidth = 10.0f;
+    float32 viewportHeight = viewportWidth * imageHeight / imageWidth;
+    vec3 viewportX = vec3(viewportWidth, 0, 0);
+    vec3 viewportY = vec3(0, viewportHeight, 0);
+    vec3 pixelDeltaX = viewportX / imageWidth;
+    vec3 pixelDeltaY = viewportY / imageHeight;
+    vec3 viewPortOrigin = cameraPos - vec3(0, 0, focalLength) - viewportX / 2.0f - viewportY / 2.0f;
+    vec3 pixelOrigin = viewPortOrigin + 0.5f * (pixelDeltaX + pixelDeltaY);
+
+    Image img(imageWidth, imageHeight);
+
+    for (int32 y = 0; y < imageHeight; y++) {
+        for (int32 x = 0; x < imageWidth; x++) {
+            vec3 pixelPos = pixelOrigin + y * pixelDeltaY + x * pixelDeltaX;
+            ray3d ray(cameraPos, pixelPos - cameraPos);
+            pixelRGB pixel = raycast(ray);
+            img.set(x, y, pixel);
         }
     }
-    std::clog << "\rDone.                                   \n";
-    imgSaveImage(image, "../../output.bmp");
-    imgDestroyImage(image);
 
-    int64 endTime = clock();
-    std::cout << endTime - startTime << " milliseconds\n";
+    img.save("../../output.bmp");
     return 0;
 }
