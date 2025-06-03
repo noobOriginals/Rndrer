@@ -48,11 +48,11 @@ struct triangle {
 };
 
 pixelRGB raycast(ray3d ray) {
-    sphere s(vec::vec3(0.0f, 0.0f, -1.0f), 0.2f);
+    sphere s(vec::vec3(0.0f, 0.0f, -1.0f), 0.5f);
     if (s.hitsRay(ray)) {
         return pixelRGB(200, 255, 0);
     }
-    vec::vec3 unit_direction = ray.dir.len();
+    vec::vec3 unit_direction = vec::normalize3(ray.dir);
     vec::vec3 a = 0.5f * (unit_direction.y + 1.0f);
     vec::vec3 col = (1.0f - a) * vec::vec3(1.0, 1.0, 1.0) + a * vec::vec3(0.5, 0.7, 1.0);
     return pixelRGB(col.x * 255, col.y * 255, col.z * 255);

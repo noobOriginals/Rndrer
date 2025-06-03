@@ -90,7 +90,7 @@ std::ostream& operator<<(std::ostream& os, vec3 v) {
 }
 // Other vec3 operators
 float32 dot3(vec3 v0, vec3 v1) {
-    return v0.x * v1.x + v0.y + v1.y + v0.z * v1.z;
+    return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z;
 }
 vec3 cross3(vec3 v0, vec3 v1) {
     vec3 vec;
