@@ -91,6 +91,7 @@ struct Image {
             fwrite(&pixels[i].r, sizeof(uint8), 1, file);
         }
         fclose(file);
+        free(content);
     }
 };
 
