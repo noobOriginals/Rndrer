@@ -1,5 +1,5 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef RENDER_HPP
+#define RENDER_HPP
 
 // Local includes
 #include <util/types.h>
@@ -7,7 +7,24 @@
 #include <util/image.hpp>
 #include <geometry.hpp>
 
-struct Camera {
+namespace render {
+
+image::Pixel raycast(geo::Ray r) {
+    geo::Sphere s(math::Vec3(0.0f, 0.0f, -1.0f), 0.5f);
+    float32 t = s.hitRay(r);
+    if (t > 0) {
+        math::Vec3 unit = math::normalize(r.at(t) - s.c);
+        math::Vec3 col = 0.5f * math::Vec3(unit.x + 1.0f, unit.y + 1.0f, unit.z + 1.0f);
+        return geo::vecToPixel(col);
+    }
+    else {
+        return image::Pixel(10, 10, 10); // Background color
+    }
+}
+
+}
+
+struct Render {
     float32 aspectRatio;
     float32 focalLength;
     image::Image image;
@@ -17,7 +34,7 @@ struct Camera {
     math::Vec3 pixelDeltaX;
     math::Vec3 pixelDeltaY;
     math::Vec3 pixelOrigin;
-    Camera(math::Vec3 pos, float32 aspectRatio, float32 focalLength, int32 imageWidth, float32 viewportWidth) {
+    Render(math::Vec3 pos, float32 aspectRatio, float32 focalLength, int32 imageWidth, float32 viewportWidth) {
         this->pos = pos;
         this->aspectRatio = aspectRatio;
         this->focalLength = focalLength;
@@ -31,7 +48,7 @@ struct Camera {
         math::Vec3 viewPortOrigin = pos - math::Vec3(0, 0, focalLength) - viewportX / 2.0f - viewportY / 2.0f;
         this->pixelOrigin = viewPortOrigin + 0.5f * (pixelDeltaX + pixelDeltaY);
     }
-    Camera& operator=(const Camera& cam) {
+    Render& operator=(const Render& cam) {
         pos = cam.pos;
         aspectRatio = cam.aspectRatio;
         focalLength = cam.focalLength;
@@ -46,20 +63,16 @@ struct Camera {
     math::Vec3 getPixelPos(int32 x, int32 y) {
         return pixelOrigin + y * pixelDeltaY + x * pixelDeltaX;
     }
-    void render() {
+    void run() {
         for (int32 y = 0; y < image.height; y++) {
             for (int32 x = 0; x < image.width; x++) {
                 math::Vec3 pixelPos = pixelOrigin + y * pixelDeltaY + x * pixelDeltaX;
                 geo::Ray ray(pos, pixelPos - pos);
-                image.set(x, y, image::Pixel(
-                    (uint8)((ray.dir.x + 1.0f) * 127.5f), // Map x from [-1, 1] to [0, 255]
-                    (uint8)((ray.dir.y + 1.0f) * 127.5f), // Map y from [-1, 1] to [0, 255]
-                    (uint8)((ray.dir.z + 1.0f) * 127.5f)  // Map z from [-1, 1] to [0, 255]
-                ));
+                image.set(x, y, render::raycast(ray));
             }
         }
     }
-    void saveRender(const char* filename) {
+    void save(const char* filename) {
         image.save(filename);
     }
 };

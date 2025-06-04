@@ -3,17 +3,17 @@
 
 // Local includes
 #include <util/types.h>
-#include <camera.hpp>
+#include <render.hpp>
 
 int32 main() {
-    Camera camera(
+    Render render(
         math::Vec3(0, 0, 0), // Position of the camera
         4.0f / 3.0f,       // Aspect ratio
         2.0f,               // Focal length
         1200,                // Image width
         10.0f                // Viewport width
     );
-    camera.render();
-    camera.saveRender("../../render.bmp");
+    render.run();
+    render.save("../../render.bmp");
     return 0;
 }
