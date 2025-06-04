@@ -43,9 +43,9 @@ struct Sphere {
     }
     float32 hitRay(Ray ray) {
         math::Vec3 oc = c - ray.orig;
-        float32 a = math::dot(ray.dir, ray.dir);
+        float32 a = ray.dir.lenSq();
         float32 b = math::dot(ray.dir, oc);
-        float32 c = math::dot(oc, oc) - r * r;
+        float32 c = oc.lenSq() - r * r;
         float32 delta = b * b - a * c;
         if (delta < 0) {
             return -1.0f;
