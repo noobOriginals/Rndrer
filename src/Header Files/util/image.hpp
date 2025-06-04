@@ -8,45 +8,66 @@
 // Local includes
 #include <util/types.h>
 
+namespace image {
+
 // Structs
-struct pixelRGB {
+struct Pixel {
     uint8 r, g, b;
-    pixelRGB() {
+    Pixel() {
         r = g = b = 0;
     }
-    pixelRGB(uint8 x) {
+    Pixel(uint8 x) {
         r = g = b = x;
     }
-    pixelRGB(uint8 x, uint8 y, uint8 z) {
+    Pixel(uint8 x, uint8 y, uint8 z) {
         r = x;
         g = y;
         b = z;
     }
-    pixelRGB operator=(const pixelRGB& p) {
+    Pixel& operator=(const Pixel& p) {
         r = p.r;
         g = p.g;
         b = p.b;
-        return pixelRGB(r, g, b);
+        return *this;
     }
 };
 struct Image {
-    pixelRGB* pixels;
+    Pixel* pixels;
     int32 width, height, size;
+    Image() {
+        width = height = size = 0;
+        pixels = nullptr;
+    }
     Image(int32 w, int32 h) {
         width = w;
         height = h;
         size = w * h;
-        pixels = (pixelRGB*)calloc(size, sizeof(pixelRGB));
+        pixels = (Pixel*)calloc(size, sizeof(Pixel));
     }
     ~Image() {
         free(pixels);
     }
-    void set(int32 x, int32 y, pixelRGB px) {
+    Image& operator=(const Image& img) {
+        width = img.width;
+        height = img.height;
+        size = img.size;
+        pixels = (Pixel*)calloc(size, sizeof(Pixel));
+        for (int32 i = 0; i < size; i++) {
+            pixels[i].r = img.pixels[i].r;
+            pixels[i].g = img.pixels[i].g;
+            pixels[i].b = img.pixels[i].b;
+        }
+        return *this;
+    }
+    Pixel get(int32 x, int32 y) {
+        return pixels[y * width + x];
+    }
+    void set(int32 x, int32 y, Pixel px) {
         pixels[y * width + x].r = px.r;
         pixels[y * width + x].g = px.g;
         pixels[y * width + x].b = px.b;
     }
-    void setPixels(int32 size, pixelRGB* pxs) {
+    void setPixels(int32 size, Pixel* pxs) {
         for (int32 i = 0; i < size; i++) {
             pixels[i].r = pxs[i].r;
             pixels[i].g = pxs[i].g;
@@ -94,5 +115,7 @@ struct Image {
         free(content);
     }
 };
+
+}
 
 #endif

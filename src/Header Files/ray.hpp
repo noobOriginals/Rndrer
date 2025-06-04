@@ -2,24 +2,24 @@
 #define RAY_HPP
 
 // Local includes
-#include <util/vec.hpp>
+#include <util/math.hpp>
 
-struct ray3d {
-    vec::vec3 orig, dir;
-    ray3d() {
-        orig = dir = vec::vec3(0.0f);
+struct Ray {
+    math::Vec3 orig, dir;
+    Ray() {
+        orig = dir = math::Vec3(0.0f);
     }
-    ray3d(vec::vec3 origin, vec::vec3 direction) {
+    Ray(math::Vec3 origin, math::Vec3 direction) {
         orig = origin;
         dir = direction;
     }
-    vec::vec3 at(const float32 t) {
+    math::Vec3 at(const float32 t) {
         return orig + dir * t;
     }
-    ray3d operator=(const ray3d& r) {
+    Ray operator=(const Ray& r) {
         orig = r.orig;
         dir = r.dir;
-        return ray3d(orig, dir);
+        return *this;
     }
 };
 
